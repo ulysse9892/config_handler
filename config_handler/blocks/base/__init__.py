@@ -56,7 +56,7 @@ class ConfigMethodCaller:
 
             target = instance
 
-            method = self.config.get('from_method')
+            method = self.config.get('from')
             if method:
                 self.from_method = create_wrapped_methods(method, instance,instantiator=True,glob_config=self.glob_config)
                 target = self.from_method()
@@ -66,7 +66,7 @@ class ConfigMethodCaller:
         else:
             target=None
 
-        methods=self.config.get('methods_to_call')
+        methods=self.config.get('methods')
 
         execute_methods=create_wrapped_methods(methods,target,glob_config=self.glob_config)
         execute_methods()
