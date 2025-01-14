@@ -1,0 +1,10 @@
+name: env_config_handler
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - ipykernel
+  - pip
+  - pip:
+      - -r ./requirements.txt
+  - python=3.9
