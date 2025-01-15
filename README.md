@@ -49,9 +49,9 @@ With this, the dataframe will be available under the name df
 
 1. Basics
     
-    The steps are basically a series of functions to execute.
+    The steps are basically series of functions to execute.
     
-    Those functions are put in a list under the keyword "methods_to_call" where they will be executed in order.
+    Those functions are put in a list under the keyword "methods" where they will be executed in order.
     The function is put under the keyword "name" and its arguments under "args"
     
     It is possible for the product of one function to be reused by the next. To that the keyword "result" must be used and called.
@@ -68,7 +68,7 @@ With this, the dataframe will be available under the name df
           - 2
     
     step1:
-      methods_to_call:
+      methods:
         - name: "$import:pandas.DataFrame"
           result: df
           args:
@@ -89,12 +89,12 @@ With this, the dataframe will be available under the name df
    
 2. Methods from classes
 
-    It is also possible to initialize a class from a method and have it execute methods. To do so the keyword "from_method" must be used for initializing, and "$method" to call the method to execute
+    It is also possible to initialize a class from a method and have it execute methods. To do so the keyword "from" must be used for initializing, and "$method" to call the method you want to execute
     
     ```yaml
     step1:
       obj_name: "$import:pandas.read_parquet"
-      from_method:
+      from:
         name: "$method:from_dict"
         args:
           data:
@@ -104,13 +104,13 @@ With this, the dataframe will be available under the name df
             B:
               - 1
               - 2
-      methods_to_call:
+      methods:
         - name: "$method:to_parquet"
           args:
             path: "C:\output\table.parquet"
     ```
     
-    Here a dataframe was initialized using from_dict, and it was exported as a parquet file using the to_parquet method
+    Here a dataframe was initialized using from_dict, and it was exported as a parquet file using the "to_parquet" method
 
 3. Combining tools
 
