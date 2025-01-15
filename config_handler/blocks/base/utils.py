@@ -68,6 +68,9 @@ def get_nested_value(keys: List[str],dictionary:Dict[Any,Any]=None):
 def is_global(value:str):
     return value.startswith("$global:")
 
+def is_local(value:str):
+    return value.startswith("$local:")
+
 def is_path(value:str):
     return value.startswith("$path:")
 
@@ -113,10 +116,12 @@ def handle_env(value:str):
 
 def handle_path(value:str,resource:Dict[str,Any]=None):
     path_keys = value[6:].split(":",1)
-    try:
-        base_path = resource[path_keys[0]]
-    except:
-        base_path = os.getenv(path_keys[0], os.getenv("path"))
+    path_first=path_keys[0]
+    if path_first in resource:
+        base_path = resource[path_first]
+    else:
+        print(f"No path named {path_first}")
+        return None
     os.makedirs(base_path, exist_ok=True)
     if len(path_keys)>1:
         path=os.path.join(base_path,path_keys[1])

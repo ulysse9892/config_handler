@@ -1,7 +1,14 @@
 from .utils import process_args, handle_import, handle_special
+from typing import Dict,Any
 
-def create_wrapped_methods(methods,target,instantiator:bool=False,glob_config:dict=None,
-                           arg_key:str='args',name_key:str='name'):
+def create_wrapped_methods(methods,
+                           target,
+                           instantiator: bool=False,
+                           glob_config:dict=None,
+                           arg_key:str='args',
+                           name_key:str='name',
+                           use_key:str="use",
+                           output_key:str='output'):
     if methods is None:
         return target
 
@@ -11,7 +18,7 @@ def create_wrapped_methods(methods,target,instantiator:bool=False,glob_config:di
         results = {}
         for m in methods:
             glob_config.update(results)
-            if not handle_special(m.get("use",True),target, glob_config):
+            if not handle_special(m.get(use_key,True),target, glob_config):
                 continue
             method_and_args=process_args(m, target, glob_config)
             kwargs_to_use = kwargs.copy()
@@ -20,16 +27,18 @@ def create_wrapped_methods(methods,target,instantiator:bool=False,glob_config:di
             result = method_and_args[name_key](*args, **kwargs_to_use)
             if instantiator:
                 return result
-            output = m.get('output')
+            output = m.get(output_key)
             if output:
                 results[output]=result
         return results
     return wrapped_methods
 
 class ConfigMethodCaller:
-    def __init__(self, config:dict,glob_config:dict=None):
+    def __init__(self, config:Dict[str,Any],
+                 glob_config:Dict[str,Any]=None,
+                 local_key:str='local_args'):
         self.results = None
-        local_args = process_args(config.get('local_args', {}), resource=glob_config,accessible=True)
+        local_args = process_args(config.get(local_key, {}), resource=glob_config,accessible=True)
 
         if glob_config:
             glob_config_local = glob_config.copy()
@@ -73,9 +82,9 @@ class ConfigMethodCaller:
 
 
 class AllMethodsCaller:
-    def __init__(self, config:dict):
+    def __init__(self, config:Dict[str,Any],glob_key:str='$global'):
         self.results = None
-        self.glob = process_args(config.pop('$global', {}),accessible=True)
+        self.glob = process_args(config.pop(glob_key, {}),accessible=True)
         self.config = config
 
     def load(self,step:str):
