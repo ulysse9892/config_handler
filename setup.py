@@ -6,7 +6,7 @@ setup(
     description="A tool to handle config files in yml format with specific keywords",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    author="Ulysse",
+    author="ultra112",
     author_email="ulysse.mendezbrid@gmail.com",
     url="https://github.com/ulysse9892/config_handler",
     packages=find_packages(),
