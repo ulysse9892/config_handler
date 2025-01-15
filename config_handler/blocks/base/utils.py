@@ -1,7 +1,7 @@
 import os
 from importlib import import_module
 from config_handler.utils import load_configuration
-from typing import List,Union,Dict,Any
+from typing import List,Union,Dict,Any,Callable
 
 
 def dict_replace_value(d:Dict[Any,Any],old,new):
@@ -12,12 +12,12 @@ def dict_replace_value(d:Dict[Any,Any],old,new):
             d[k] = [new]
     return d
 
-def function_wrapper(function,function_args:Dict[str,Any]=None,*args, **kwargs):
+def function_wrapper(function:Callable,function_args:Dict[str,Any]=None,*args, **kwargs):
     if function_args:
         kwargs.update(function_args)
     return function(*args, **kwargs)
 
-def execute_actions(function=None,function_args:Dict[str,Any]=None,to_return:bool=True,actions:Union[List[Dict[str,Any]],Dict[str,Any]]=None,*args,**kwargs):
+def execute_actions(function:Callable=None,function_args:Dict[str,Any]=None,to_return:bool=True,actions:Union[List[Dict[str,Any]],Dict[str,Any]]=None,*args,**kwargs):
     result = None
     if actions:
         if isinstance(actions, dict):
@@ -38,11 +38,11 @@ def execute_actions(function=None,function_args:Dict[str,Any]=None,to_return:boo
     if to_return:
         return result
 
-def load_bound_method(cls,method:str,cls_args:Dict[str,Any]=None,*args, **kwargs):
+def load_bound_method(cls:type,method:str,cls_args:Dict[str,Any]=None,*args, **kwargs):
     cls_instantiated=function_wrapper(cls,cls_args,*args,**kwargs)
     return getattr(cls_instantiated, method)
 
-def execute_bound_method(cls,method:str,cls_args:Dict[str,Any]=None,*args, **kwargs):
+def execute_bound_method(cls:type,method:str,cls_args:Dict[str,Any]=None,*args, **kwargs):
     bound_method=load_bound_method(cls,method,cls_args)
     return bound_method(*args, **kwargs)
 
@@ -136,7 +136,7 @@ def handle_config(value:str,resource:Dict[str,Any]=None):
 
     return load_configuration(config_key)
 
-def handle_method(value:str,class_instance=None,resource:Dict[str,Any]=None):
+def handle_method(value:str,class_instance: type=None,resource:Dict[str,Any]=None):
     method_keys = value[8:].split(":", 1)
     if len(method_keys)>1:
         if resource is None:
@@ -156,7 +156,7 @@ def handle_import(value:str):
     import_key = value[8:]
     return dynamic_import(import_key)
 
-def handle_special(name:Any,class_instance=None,resource:Dict[str,Any]=None):
+def handle_special(name:Any,class_instance: type=None,resource:Dict[str,Any]=None):
     if not isinstance(name,str):
         return name
     if is_env(name):
@@ -176,7 +176,7 @@ def handle_special(name:Any,class_instance=None,resource:Dict[str,Any]=None):
     else:
         return name
 
-def process_args(args:Dict[str,Any],class_instance=None,resource:Dict[str,Any]=None,accessible:bool=False):
+def process_args(args:Dict[str,Any],class_instance: type=None,resource:Dict[str,Any]=None,accessible:bool=False):
     special_obj_key =  "obj_name"
     special_init_key =  "init_args"
     glob_key = "glob_arg"

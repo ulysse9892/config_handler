@@ -1,8 +1,8 @@
 from .utils import process_args, handle_import, handle_special
-from typing import Dict,Any
+from typing import Union,List,Dict,Any,Callable
 
-def create_wrapped_methods(methods,
-                           target,
+def create_wrapped_methods(methods:Union[List[Dict[str,Any]],Dict[str,Any]],
+                           target: Union[type,Callable],
                            instantiator: bool=False,
                            glob_config:dict=None,
                            arg_key:str='args',
