@@ -22,7 +22,7 @@ def create_wrapped_methods(methods:Union[List[Dict[str,Any]],Dict[str,Any]],
                 continue
             method_and_args=process_args(m, target, glob_config)
             kwargs_to_use = kwargs.copy()
-            kwargs_to_use.update(method_and_args[arg_key])
+            kwargs_to_use.update(method_and_args.get(arg_key,{}))
             print(f"Calling {method_and_args[name_key]} with {args} and {kwargs_to_use}")
             result = method_and_args[name_key](*args, **kwargs_to_use)
             if instantiator:
