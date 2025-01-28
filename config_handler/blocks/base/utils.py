@@ -153,8 +153,18 @@ def handle_method(value:str,class_instance: type=None,resource:Dict[str,Any]=Non
         return method
 
 def handle_import(value:str):
-    import_key = value[8:]
-    return dynamic_import(import_key)
+    import_keys = value[8:].split(":", 1)
+    imported_object = dynamic_import(import_keys[0])
+    if len(import_keys)>1:
+        method_key=import_keys[1]
+        method = getattr(imported_object, method_key, None)
+        if not method:
+            print(f"Couldn't find {method_key} in {imported_object}")
+            return value
+        else:
+            return method
+    else:
+        return imported_object
 
 def handle_special(name:Any,class_instance: type=None,resource:Dict[str,Any]=None):
     if not isinstance(name,str):
