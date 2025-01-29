@@ -199,6 +199,7 @@ def process_args(args:Dict[str,Any],class_instance: type=None,resource:Dict[str,
         if isinstance(value, str):
             result=handle_special(value,class_instance,resource)
             if isinstance(result, dict) and result.get("delay",False):
+                result["delay"]=False
                 return process_value(result)
             if accessible:
                 resource[key] = result
