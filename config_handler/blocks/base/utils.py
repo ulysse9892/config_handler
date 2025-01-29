@@ -198,6 +198,8 @@ def process_args(args:Dict[str,Any],class_instance: type=None,resource:Dict[str,
     def process_value(value:Any, key:str=None):
         if isinstance(value, str):
             result=handle_special(value,class_instance,resource)
+            if isinstance(result, dict) and result.get("delay",False):
+                return process_value(result)
             if accessible:
                 resource[key] = result
             return result
@@ -206,6 +208,8 @@ def process_args(args:Dict[str,Any],class_instance: type=None,resource:Dict[str,
         elif isinstance(value, dict):
             if not process_value(value.get("use",True)):
                 return None
+            if value.get("delay",False):
+                return value
             if special_obj_key in value:
                 if local_key in value:
                     local_args=process_args(value[local_key],class_instance,resource,accessible=True)
