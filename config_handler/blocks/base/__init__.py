@@ -50,7 +50,7 @@ class ConfigMethodCaller:
         self.config = config
 
 
-    def call_methods(self):
+    def call(self):
         if self.config.get('obj_name'):
 
             obj = handle_import(self.config['obj_name'])
@@ -67,8 +67,8 @@ class ConfigMethodCaller:
 
             method = self.config.get('from')
             if method:
-                self.from_method = create_wrapped_methods(method, instance,instantiator=True,glob_config=self.glob_config)
-                target = self.from_method()
+                from_method = create_wrapped_methods(method, instance,instantiator=True,glob_config=self.glob_config)
+                target = from_method()
                 print(f"INSTANTIATED FROM METHOD")
             else:
                 print(f"NO INSTANTIATING METHOD")
@@ -92,5 +92,5 @@ class AllMethodsCaller:
 
     def call(self,step:str):
         step_ready_to_execute = self.load(step)
-        step_ready_to_execute.call_methods()
+        step_ready_to_execute.call()
 
